@@ -377,4 +377,4 @@ async def bottomText(ctx, *, message):
                 return
 
 
-client.run('Nzc2NjQ2MDkzNTIxMDI3MTAy.X636Cg.GrdtV0KKR8Fs5AeUDxaUbtj6U-E')
+client.run('Bot_TOKEN')
