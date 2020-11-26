@@ -368,8 +368,7 @@ async def bottomText(ctx, *, message):
                 pic = Image.open(data)
                 width, height = pic.size
                 scalar = int(height) if height < width else int(width)
-                shrinker = len(message) if scalar > 250 else 0
-                font = ImageFont.truetype("impact.ttf", int(abs((scalar / len(message)) + shrinker)))
+                font = ImageFont.truetype("impact.ttf", int((scalar / len(message))))
                 draw_multiple_line_stroke_text(pic, message, font, (255, 255, 255), pic.height - (height / 4))
                 pic.save("funni.png")
                 await ctx.send(file=discord.File("funni.png"))
