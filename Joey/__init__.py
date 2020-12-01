@@ -47,7 +47,7 @@ def draw_multiple_line_text(image, text, font, text_color, text_start_height):
     lines = textwrap.wrap(text, width=40)
     for line in lines:
         line_width, line_height = font.getsize(line)
-        draw.text(((image_width + line_width) / 2, y_text), line, font=font, fill=text_color)
+        draw.text(((image_width - line_width) / 2, y_text), line, font=font, fill=text_color)
         y_text += line_height
 
 
@@ -61,7 +61,8 @@ def draw_multiple_line_stroke_text(image, text, font, text_color, text_start_hei
     lines = textwrap.wrap(text, width=wrap_limit)
     for line in lines:
         line_width, line_height = font.getsize(line)
-        draw.text(((image_width - line_width) / 2, y_text), line, font=font, fill=text_color, stroke_width=int(font.size/10),
+        draw.text(((image_width - line_width) / 2, y_text), line, font=font, fill=text_color,
+                  stroke_width=int(font.size / 10),
                   stroke_fill=(0, 0, 0))
         y_text += line_height
 
@@ -81,8 +82,13 @@ lonely_list = getmp3s('alone')
 @client.event
 async def on_ready():
     await client.change_presence(activity=discord.Game(name='Driving with Vito'))
+    f = open('log/Targets.txt', 'r')
+    for line in f:
+        (guild_id, member_id) = line.split(',')
+        client.target[client.get_guild(int(guild_id))] = client.get_user(int(member_id))
+    log.start()
     print("Joe is up and running")
-
+    
 
 @client.event
 async def on_member_update(before, after):
@@ -103,15 +109,22 @@ async def on_member_update(before, after):
             game_list.get(after.guild).append(remove_noise_words(after.activity.name.lower()))
 
 
+@tasks.loop(hours=10)
+async def log():
+    f = open('log/Targets.txt', 'w')
+    for guild, member in client.target.items():
+        f.write(f"{guild.id},{member.id}")
+
+
 @tasks.loop(hours=24)
 async def morning(guild: discord.Guild):
     global morning_channel
     await morning_channel.get(guild).send(f"Good Morning {guild.name}")
     if client.target.get(guild) is not None:
-        responses = ["I hope you shit yourself", "I hope you have a terrible day",
+        responses = ["I hope you shit yourself, today", "I hope you have a terrible day",
                      "You're fat", "You're ugly"]
         await morning_channel.get(guild).send(f"except you {client.target.get(guild).display_name}")
-        await asyncio.sleep(2)
+        await asyncio.sleep(1)
         await morning_channel.get(guild).send(random.choice(responses))
 
 
@@ -368,12 +381,14 @@ async def bottomText(ctx, *, message):
                 pic = Image.open(data)
                 width, height = pic.size
                 scalar = int(height) if height < width else int(width)
-                font = ImageFont.truetype("impact.ttf", int((scalar / len(message))))
+                shrinker = len(message) / 2 if scalar > 250 else 0
+                font = ImageFont.truetype("impact.ttf", int((scalar / len(message)) + shrinker))
+                font.size = font.size + len(message) if font.size < 11 else font.size
+                print(font.size)
                 draw_multiple_line_stroke_text(pic, message, font, (255, 255, 255), pic.height - (height / 4))
                 pic.save("funni.png")
                 await ctx.send(file=discord.File("funni.png"))
                 os.remove("funni.png")
                 return
-
 
 client.run('Bot_TOKEN')
