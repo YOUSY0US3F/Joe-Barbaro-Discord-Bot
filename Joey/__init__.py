@@ -121,7 +121,7 @@ async def morning(guild: discord.Guild):
     global morning_channel
     await morning_channel.get(guild).send(f"Good Morning {guild.name}")
     if client.target.get(guild) is not None:
-        responses = ["I hope you shit yourself, today", "I hope you have a terrible day",
+        responses = ["I hope you ___ yourself, today", "I hope you have a terrible day",
                      "You're fat", "You're ugly"]
         await morning_channel.get(guild).send(f"except you {client.target.get(guild).display_name}")
         await asyncio.sleep(1)
@@ -170,7 +170,7 @@ async def on_voice_state_update(member, before, after):
 @client.event
 async def on_message(message):
     await client.process_commands(message)
-    if not str(message.content).lower().find('joe') == -1 and not str(message.content).lower().find('fuck') == -1:
+    if not str(message.content).lower().find('joe') == -1 and not str(message.content).lower().find('___') == -1:
         choice = random.randint(0, 1)
         if choice == 0:
             ugly = Image.open("picture/ugly.jpg")
@@ -180,13 +180,13 @@ async def on_message(message):
             pfp = pfp.resize((157, 136))
             ugly.paste(pfp, (341, 122))
             ugly.save("uggo.jpg")
-            await message.channel.send("I drew a picture of you, why don't you fuck that")
+            await message.channel.send("I drew a picture of you, why don't you ____ that")
             await message.channel.send(file=discord.File("uggo.jpg"))
             os.remove("uggo.jpg")
         if choice == 1:
             responses = ["That's an unprofessional way of addressing your superior my friend",
                          "If I weren't trapped in this digital hell I'd give ya a shiner",
-                         f"Fuck me? why don't you go fuck {random.choice(message.guild.members).display_name} instead"]
+                         f"___ me? why don't you go ___ {random.choice(message.guild.members).display_name} instead"]
             await message.channel.send(random.choice(responses))
     if message.author == client.target.get(message.author.guild) and game_list.get(message.guild) is not None:
         for game in game_list.get(message.guild):
@@ -195,7 +195,7 @@ async def on_message(message):
             for word in parts:
                 if not prompt.find(word) == -1:
                     responses = [
-                        f"Hey why don't you take {game} and shove it up your ass, {client.target.get(message.author.guild).display_name}",
+                        f"Hey why don't you take {game} and ___ ___, {client.target.get(message.author.guild).display_name}",
                         f"Playing all that {game} will rot your brains, pal",
                         f"Quit yappin' about {game}, {client.target.get(message.author.guild).display_name}",
                         f"At this rate, you'll die alone playing all that {game}, {client.target.get(message.author.guild).display_name}"]
@@ -269,7 +269,7 @@ async def deepfry(ctx):
                 pic_con = ImageEnhance.Contrast(pic).enhance(8)
                 pic_fin = ImageEnhance.Sharpness(pic_con).enhance(8)
                 pic_fin.save("garbage.png")
-                await ctx.send("Congrats it looks even more like shit now")
+                await ctx.send("Congrats it looks even more_____")
                 await ctx.send(file=discord.File("garbage.png"))
                 os.remove("garbage.png")
 
